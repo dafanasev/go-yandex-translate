@@ -1,15 +1,16 @@
-package yandex_translate
+package translate
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	
+	. "github.com/smartystreets/goconvey/convey"
 )
 
-const API_KEY = "trnsl.1.1.20130906T224742Z.773de87520381874.34176f81082c2758819298377d038a2b94a0c8d0"
+const apiKey = "trnsl.1.1.20130906T224742Z.773de87520381874.34176f81082c2758819298377d038a2b94a0c8d0"
 
 func TestTranslateAPI(t *testing.T) {
 	Convey("#GetLangs", t, func() {
-		tr := New(API_KEY)
+		tr := New(apiKey)
 
 		Convey("On success it returns available codes and languages", func() {
 			response, err := tr.GetLangs("en")
@@ -26,7 +27,7 @@ func TestTranslateAPI(t *testing.T) {
 		})
 
 		Convey("On failure it returns error code and message", func() {
-			tr := New(API_KEY + "a")
+			tr := New(apiKey + "a")
 			response, err := tr.GetLangs("en")
 			So(response, ShouldBeNil)
 			So(err, ShouldNotBeNil)
@@ -35,10 +36,10 @@ func TestTranslateAPI(t *testing.T) {
 	})
 
 	Convey("#Translate", t, func() {
-		tr := New(API_KEY)
+		tr := New(apiKey)
 
 		Convey("On success it returns translation of the word", func() {
-			response, err := tr.Translate("ru", "A lazy dog")
+			response, err := tr.Translate("ru", "dog")
 
 			So(err, ShouldBeNil)
 			So(response, ShouldNotBeNil)
@@ -48,22 +49,22 @@ func TestTranslateAPI(t *testing.T) {
 
 			So(response.Lang, ShouldEqual, "en-ru")
 			So(response.Detected["lang"], ShouldEqual, "en")
-			So(response.Text, ShouldContain, "Ленивая собака")
+			So(response.Text, ShouldContain, "собака")
 		})
 
 		Convey("On fail it returns an error with error code and message", func() {
-			response, err := tr.Translate("mumba-yumba", "A lazy dog")
+			response, err := tr.Translate("mumba-yumba", "dog")
 
 			So(err, ShouldNotBeNil)
 			So(response, ShouldBeNil)
-			So(err.Error(), ShouldEqual, "(501) The specified translation direction is not supported")
+			So(err.Error(), ShouldEqual, "can't get translation for dog: 502, Invalid parameter: lang")
 		})
 	})
 
 	Convey("#Result", t, func() {
-		tr := New(API_KEY)
-		response, _ := tr.Translate("ru", "A lazy dog")
-		So(response.Result(), ShouldEqual, "Ленивая собака")
+		tr := New(apiKey)
+		response, _ := tr.Translate("ru", "dog")
+		So(response.Result(), ShouldEqual, "собака")
 	})
 
 }
