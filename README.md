@@ -33,7 +33,6 @@ func main() {
   if err != nil {
     fmt.Println(err)
   } else {
-    fmt.Println(translation)
     fmt.Println(translation.Result())
   }
 }
