@@ -1,3 +1,4 @@
+// Package translate is the Yandex.Translate API client
 package translate
 
 import (
@@ -5,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	
+
 	"github.com/pkg/errors"
 )
 
@@ -65,7 +66,7 @@ func (tr *Translator) GetLangs(ui string) (*Languages, error) {
 // Translate returns translation for the request
 func (tr *Translator) Translate(lang, text string) (*Response, error) {
 	errMsg := fmt.Sprintf("can't get translation for %s", text)
-	
+
 	builtParams := url.Values{"key": {tr.apiKey}, "lang": {lang}, "text": {text}, "options": {"1"}}
 	resp, err := http.PostForm(absURL(translatePath), builtParams)
 	if err != nil {
